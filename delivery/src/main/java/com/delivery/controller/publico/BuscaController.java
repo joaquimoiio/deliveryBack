@@ -2,10 +2,8 @@ package com.delivery.controller.publico;
 
 import com.delivery.dto.empresa.EmpresaDTO;
 import com.delivery.dto.empresa.ProdutoDTO;
-import com.delivery.dto.publico.CategoriaDTO;
 import com.delivery.service.empresa.EmpresaService;
 import com.delivery.service.empresa.ProdutoService;
-import com.delivery.service.publico.CatalogoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,7 +21,6 @@ public class BuscaController {
 
     private final EmpresaService empresaService;
     private final ProdutoService produtoService;
-    private final CatalogoService catalogoService;
 
     @GetMapping("/empresas")
     public ResponseEntity<Page<EmpresaDTO>> listarEmpresas(
@@ -112,9 +109,6 @@ public class BuscaController {
         return ResponseEntity.ok(produtos);
     }
 
-    @GetMapping("/categorias")
-    public ResponseEntity<List<CategoriaDTO>> listarCategorias() {
-        List<CategoriaDTO> categorias = catalogoService.listarCategorias();
-        return ResponseEntity.ok(categorias);
-    }
+    // REMOVIDO: listarCategorias() - já existe no CategoriaController
+    // Para acessar categorias, use: GET /publico/categorias
 }
