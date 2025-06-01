@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/cliente")
+@RequestMapping("/api/cliente")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class ClienteController {
@@ -31,7 +31,4 @@ public class ClienteController {
         ClienteDTO cliente = clienteService.atualizarPerfil(clienteDTO, authentication.getName());
         return ResponseEntity.ok(cliente);
     }
-
-    // REMOVIDO: O método criarPedido foi removido daqui pois já existe em PedidoClienteController
-    // Isso evita o conflito de mapeamento ambíguo
 }

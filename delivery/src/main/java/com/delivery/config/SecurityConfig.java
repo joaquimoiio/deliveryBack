@@ -19,12 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -39,24 +33,31 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(AbstractHttpConfigurer::disable) // CORS será gerenciado pelo WebConfig
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // Endpoints públicos de autenticação
+                        .requestMatchers("/api/auth/**").permitAll()
+
                         // Endpoints públicos
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/publico/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/empresas/publico/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/produtos/publico/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/categorias/**").permitAll()
+                        .requestMatchers("/api/publico/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/publico/busca/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/publico/categorias/**").permitAll()
 
                         // Swagger/OpenAPI
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
+                        // Recursos estáticos
+                        .requestMatchers("/uploads/**", "/static/**", "/images/**").permitAll()
+
                         // Endpoints de cliente
-                        .requestMatchers("/cliente/**").hasRole("CLIENTE")
+                        .requestMatchers("/api/cliente/**").hasRole("CLIENTE")
 
                         // Endpoints de empresa
-                        .requestMatchers("/empresa/**").hasRole("EMPRESA")
+                        .requestMatchers("/api/empresa/**").hasRole("EMPRESA")
+
+                        // Endpoints de admin
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
                         // Qualquer outra requisição precisa estar autenticada
                         .anyRequest().authenticated()
@@ -65,25 +66,6 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:3000",
-                "http://localhost:3001",
-                "http://127.0.0.1:3000"
-        ));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setExposedHeaders(List.of("Authorization"));
-        configuration.setAllowCredentials(true);
-        configuration.setMaxAge(3600L);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 
     @Bean

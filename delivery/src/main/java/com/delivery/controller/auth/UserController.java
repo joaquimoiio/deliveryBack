@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/auth/user")
+@RequestMapping("/api/auth/user")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class UserController {
@@ -58,10 +58,8 @@ public class UserController {
         Usuario usuario = usuarioRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
 
-        // Aqui você pode implementar a lógica de refresh token se necessário
-        // Por enquanto, retornamos as informações básicas
         TokenResponse response = new TokenResponse(
-                null, // token seria gerado aqui
+                null,
                 usuario.getTipoUsuario(),
                 usuario.getId(),
                 usuario.getEmail()

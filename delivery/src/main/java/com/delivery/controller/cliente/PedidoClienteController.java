@@ -12,11 +12,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/cliente/pedidos")
+@RequestMapping("/api/cliente/pedidos")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class PedidoClienteController {

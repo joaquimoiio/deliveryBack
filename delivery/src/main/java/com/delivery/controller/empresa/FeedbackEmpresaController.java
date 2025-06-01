@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/empresa/feedbacks")
+@RequestMapping("/api/empresa/feedbacks")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class FeedbackEmpresaController {

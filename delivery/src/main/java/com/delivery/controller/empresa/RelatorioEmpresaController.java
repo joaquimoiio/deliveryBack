@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/empresa/relatorios")
+@RequestMapping("/api/empresa/relatorios")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class RelatorioEmpresaController {

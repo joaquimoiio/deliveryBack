@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/cliente/feedbacks")
+@RequestMapping("/api/cliente/feedbacks")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class FeedbackClienteController {

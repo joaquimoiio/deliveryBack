@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping("/empresa")
+@RequestMapping("/api/empresa")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class EmpresaController {
@@ -64,11 +64,4 @@ public class EmpresaController {
         PedidoDTO pedido = pedidoService.atualizarStatus(id, status, authentication.getName());
         return ResponseEntity.ok(pedido);
     }
-
-    // REMOVIDOS: Os métodos de produtos foram removidos daqui pois já existem em ProdutoEmpresaController
-    // Isso evita conflitos de mapeamento:
-    // - listarProdutos() -> ProdutoEmpresaController
-    // - criarProduto() -> ProdutoEmpresaController
-    // - atualizarProduto() -> ProdutoEmpresaController
-    // - deletarProduto() -> ProdutoEmpresaController
 }

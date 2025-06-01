@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/publico")
+@RequestMapping("/api/publico/busca")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class BuscaController {
@@ -32,7 +32,7 @@ public class BuscaController {
         return ResponseEntity.ok(empresas);
     }
 
-    @GetMapping("/empresas/buscar")
+    @GetMapping("/empresas/termo")
     public ResponseEntity<Page<EmpresaDTO>> buscarEmpresas(
             @RequestParam(required = false) String termo,
             @RequestParam(required = false) Long categoriaId,
@@ -87,7 +87,7 @@ public class BuscaController {
         return ResponseEntity.ok(produtos);
     }
 
-    @GetMapping("/produtos/buscar")
+    @GetMapping("/produtos/termo")
     public ResponseEntity<Page<ProdutoDTO>> buscarProdutos(
             @RequestParam String termo,
             @RequestParam(defaultValue = "0") int page,
@@ -108,7 +108,4 @@ public class BuscaController {
         Page<ProdutoDTO> produtos = produtoService.buscarPorCategoria(categoriaId, pageable);
         return ResponseEntity.ok(produtos);
     }
-
-    // REMOVIDO: listarCategorias() - já existe no CategoriaController
-    // Para acessar categorias, use: GET /publico/categorias
 }

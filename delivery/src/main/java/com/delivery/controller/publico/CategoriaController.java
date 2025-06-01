@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/publico/categorias")
+@RequestMapping("/api/publico/categorias")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class CategoriaController {

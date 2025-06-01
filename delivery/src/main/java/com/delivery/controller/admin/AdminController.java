@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 @PreAuthorize("hasRole('ADMIN')")
@@ -29,15 +29,10 @@ public class AdminController {
     @GetMapping("/dashboard")
     public ResponseEntity<Map<String, Object>> obterDashboard() {
         Map<String, Object> dashboard = new HashMap<>();
-
-        // Estatísticas gerais
         dashboard.put("totalEmpresas", empresaService.contarEmpresasAtivas());
         dashboard.put("totalCategorias", catalogoService.contarCategorias());
-
-        // Categorias mais populares
         List<CategoriaDTO> categoriasPopulares = catalogoService.listarCategoriasPopulares(5);
         dashboard.put("categoriasPopulares", categoriasPopulares);
-
         return ResponseEntity.ok(dashboard);
     }
 
@@ -45,7 +40,6 @@ public class AdminController {
     public ResponseEntity<Page<EmpresaDTO>> listarEmpresas(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-
         Pageable pageable = PageRequest.of(page, size);
         Page<EmpresaDTO> empresas = empresaService.listarEmpresas(pageable);
         return ResponseEntity.ok(empresas);
@@ -60,11 +54,8 @@ public class AdminController {
     @GetMapping("/estatisticas")
     public ResponseEntity<Map<String, Object>> obterEstatisticas() {
         Map<String, Object> stats = new HashMap<>();
-
-        // Estatísticas básicas do sistema
         stats.put("totalEmpresas", empresaService.contarEmpresasAtivas());
         stats.put("totalCategorias", catalogoService.contarCategorias());
-
         return ResponseEntity.ok(stats);
     }
 }

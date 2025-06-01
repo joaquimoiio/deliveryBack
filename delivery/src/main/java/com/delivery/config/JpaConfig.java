@@ -4,6 +4,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.context.annotation.Bean;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+
+import jakarta.persistence.EntityManagerFactory;
 
 @Configuration
 @EnableJpaRepositories(basePackages = "com.delivery.repository")
@@ -11,9 +16,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 public class JpaConfig {
 
-    // Esta classe configura:
-    // 1. Repositórios JPA na package com.delivery.repository
-    // 2. JPA Auditing para campos createdAt e updatedAt
-    // 3. Gerenciamento de transações
-
+    @Bean
+    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(entityManagerFactory);
+        return transactionManager;
+    }
 }
