@@ -3,7 +3,6 @@ package com.delivery.service.empresa;
 import com.delivery.dto.empresa.EmpresaDTO;
 import com.delivery.dto.empresa.RelatorioDTO;
 import com.delivery.entity.Empresa;
-import com.delivery.entity.Pedido;
 import com.delivery.exception.NotFoundException;
 import com.delivery.repository.EmpresaRepository;
 import com.delivery.repository.FeedbackRepository;
@@ -54,13 +53,19 @@ public class EmpresaService {
         return convertToDTO(empresa);
     }
 
-    public Empresa buscarPorEmail(String email) {
-        return empresaRepository.findByEmail(email)
+    public EmpresaDTO buscarPorEmail(String email) {
+        Empresa empresa = empresaRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Empresa não encontrada"));
+        return convertToDTO(empresa);
+    }
+
+    public Long contarEmpresasAtivas() {
+        return empresaRepository.countByAtivoTrue();
     }
 
     public RelatorioDTO gerarRelatorio(String emailEmpresa, int mes, int ano) {
-        Empresa empresa = buscarPorEmail(emailEmpresa);
+        Empresa empresa = empresaRepository.findByEmail(emailEmpresa)
+                .orElseThrow(() -> new NotFoundException("Empresa não encontrada"));
 
         YearMonth yearMonth = YearMonth.of(ano, mes);
         LocalDateTime inicioMes = yearMonth.atDay(1).atStartOfDay();
@@ -122,6 +127,16 @@ public class EmpresaService {
         dto.setDescricao(empresa.getDescricao());
         dto.setAtivo(empresa.getAtivo());
 
+        // Categoria
+        if (empresa.getCategoria() != null) {
+            com.delivery.dto.publico.CategoriaDTO categoriaDTO = new com.delivery.dto.publico.CategoriaDTO();
+            categoriaDTO.setId(empresa.getCategoria().getId());
+            categoriaDTO.setNome(empresa.getCategoria().getNome());
+            categoriaDTO.setSlug(empresa.getCategoria().getSlug());
+            categoriaDTO.setIcone(empresa.getCategoria().getIcone());
+            dto.setCategoria(categoriaDTO);
+        }
+
         // Avaliação média
         Double avaliacao = feedbackRepository.findAvaliacaoMediaByEmpresaId(empresa.getId());
         dto.setAvaliacao(avaliacao != null ? avaliacao : 0.0);
@@ -131,5 +146,4 @@ public class EmpresaService {
 
         return dto;
     }
-
 }

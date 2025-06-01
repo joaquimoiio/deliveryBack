@@ -14,7 +14,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -114,28 +116,6 @@ public class ProdutoService {
         produtoRepository.save(produto);
     }
 
-    private ProdutoDTO convertToDTO(Produto produto) {
-        ProdutoDTO dto = new ProdutoDTO();
-        dto.setId(produto.getId());
-        dto.setNome(produto.getNome());
-        dto.setDescricao(produto.getDescricao());
-        dto.setPreco(produto.getPreco());
-        dto.setImagemUrl(produto.getImagemUrl());
-        dto.setEstoque(produto.getEstoque());
-        dto.setAtivo(produto.getAtivo());
-        dto.setEmpresaId(produto.getEmpresa().getId());
-
-        if (produto.getCategoria() != null) {
-            com.delivery.dto.publico.CategoriaDTO categoriaDTO = new com.delivery.dto.publico.CategoriaDTO();
-            categoriaDTO.setId(produto.getCategoria().getId());
-            categoriaDTO.setNome(produto.getCategoria().getNome());
-            categoriaDTO.setSlug(produto.getCategoria().getSlug());
-            categoriaDTO.setIcone(produto.getCategoria().getIcone());
-            dto.setCategoria(categoriaDTO);
-        }
-
-        return dto;
-    }
     public Page<ProdutoDTO> listarProdutosDaEmpresaPaginado(String emailEmpresa, Pageable pageable) {
         Empresa empresa = empresaRepository.findByEmail(emailEmpresa)
                 .orElseThrow(() -> new NotFoundException("Empresa não encontrada"));
@@ -155,6 +135,7 @@ public class ProdutoService {
         return convertToDTO(produto);
     }
 
+    @Transactional
     public ProdutoDTO alternarStatusProduto(Long produtoId, boolean ativo, String emailEmpresa) {
         Produto produto = produtoRepository.findById(produtoId)
                 .orElseThrow(() -> new NotFoundException("Produto não encontrado"));
@@ -169,6 +150,7 @@ public class ProdutoService {
         return convertToDTO(produto);
     }
 
+    @Transactional
     public ProdutoDTO atualizarEstoque(Long produtoId, Integer novoEstoque, String emailEmpresa) {
         Produto produto = produtoRepository.findById(produtoId)
                 .orElseThrow(() -> new NotFoundException("Produto não encontrado"));
@@ -208,5 +190,32 @@ public class ProdutoService {
                 .stream()
                 .map(this::convertToDTO)
                 .toList();
+    }
+
+    public Long contarProdutosAtivos() {
+        return produtoRepository.countByAtivoTrue();
+    }
+
+    private ProdutoDTO convertToDTO(Produto produto) {
+        ProdutoDTO dto = new ProdutoDTO();
+        dto.setId(produto.getId());
+        dto.setNome(produto.getNome());
+        dto.setDescricao(produto.getDescricao());
+        dto.setPreco(produto.getPreco());
+        dto.setImagemUrl(produto.getImagemUrl());
+        dto.setEstoque(produto.getEstoque());
+        dto.setAtivo(produto.getAtivo());
+        dto.setEmpresaId(produto.getEmpresa().getId());
+
+        if (produto.getCategoria() != null) {
+            com.delivery.dto.publico.CategoriaDTO categoriaDTO = new com.delivery.dto.publico.CategoriaDTO();
+            categoriaDTO.setId(produto.getCategoria().getId());
+            categoriaDTO.setNome(produto.getCategoria().getNome());
+            categoriaDTO.setSlug(produto.getCategoria().getSlug());
+            categoriaDTO.setIcone(produto.getCategoria().getIcone());
+            dto.setCategoria(categoriaDTO);
+        }
+
+        return dto;
     }
 }

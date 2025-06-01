@@ -1,5 +1,6 @@
 package com.delivery.dto.empresa;
 
+import com.delivery.dto.publico.CategoriaDTO;
 import lombok.Data;
 import java.util.List;
 

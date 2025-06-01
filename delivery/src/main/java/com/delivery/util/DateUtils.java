@@ -259,7 +259,7 @@ public class DateUtils {
      * Converte timestamp para LocalDateTime
      */
     public static LocalDateTime fromTimestamp(long timestamp) {
-        return LocalDateTime.ofEpochSecond(timestamp, 0, ZoneOffset.systemDefault());
+        return LocalDateTime.ofEpochSecond(timestamp, 0, (ZoneOffset) ZoneOffset.systemDefault());
     }
 
     /**
