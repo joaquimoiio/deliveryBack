@@ -26,4 +26,25 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     @Query("SELECT p FROM Produto p WHERE p.ativo = true ORDER BY p.createdAt DESC")
     Page<Produto> findAllAtivoOrderByCreatedAtDesc(Pageable pageable);
+
+    @Query("SELECT p FROM Produto p WHERE p.empresa.id = :empresaId")
+    Page<Produto> findByEmpresaIdPaginated(@Param("empresaId") Long empresaId, Pageable pageable);
+
+    @Query("SELECT COUNT(p) FROM Produto p WHERE p.empresa.id = :empresaId")
+    Long countByEmpresaId(@Param("empresaId") Long empresaId);
+
+    @Query("SELECT COUNT(p) FROM Produto p WHERE p.empresa.id = :empresaId AND p.ativo = true")
+    Long countByEmpresaIdAndAtivoTrue(@Param("empresaId") Long empresaId);
+
+    @Query("SELECT COUNT(p) FROM Produto p WHERE p.empresa.id = :empresaId AND p.estoque < :limite")
+    Long countByEmpresaIdAndEstoqueLessThan(@Param("empresaId") Long empresaId, @Param("limite") Integer limite);
+
+    @Query("SELECT p FROM Produto p WHERE p.empresa.id = :empresaId AND p.estoque < :limite ORDER BY p.estoque ASC")
+    List<Produto> findByEmpresaIdAndEstoqueLessThanOrderByEstoque(@Param("empresaId") Long empresaId, @Param("limite") Integer limite);
+
+    @Query("SELECT COUNT(p) FROM Produto p WHERE p.ativo = true")
+    Long countByAtivoTrue();
+
+    @Query("SELECT COUNT(p) FROM Produto p WHERE p.categoria.id = :categoriaId")
+    Long countByCategoriaId(@Param("categoriaId") Long categoriaId);
 }

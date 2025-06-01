@@ -136,4 +136,77 @@ public class ProdutoService {
 
         return dto;
     }
+    public Page<ProdutoDTO> listarProdutosDaEmpresaPaginado(String emailEmpresa, Pageable pageable) {
+        Empresa empresa = empresaRepository.findByEmail(emailEmpresa)
+                .orElseThrow(() -> new NotFoundException("Empresa não encontrada"));
+
+        return produtoRepository.findByEmpresaIdPaginated(empresa.getId(), pageable)
+                .map(this::convertToDTO);
+    }
+
+    public ProdutoDTO buscarProdutoDaEmpresa(Long produtoId, String emailEmpresa) {
+        Produto produto = produtoRepository.findById(produtoId)
+                .orElseThrow(() -> new NotFoundException("Produto não encontrado"));
+
+        if (!produto.getEmpresa().getUsuario().getEmail().equals(emailEmpresa)) {
+            throw new BusinessException("Produto não pertence à empresa");
+        }
+
+        return convertToDTO(produto);
+    }
+
+    public ProdutoDTO alternarStatusProduto(Long produtoId, boolean ativo, String emailEmpresa) {
+        Produto produto = produtoRepository.findById(produtoId)
+                .orElseThrow(() -> new NotFoundException("Produto não encontrado"));
+
+        if (!produto.getEmpresa().getUsuario().getEmail().equals(emailEmpresa)) {
+            throw new BusinessException("Produto não pertence à empresa");
+        }
+
+        produto.setAtivo(ativo);
+        produto = produtoRepository.save(produto);
+
+        return convertToDTO(produto);
+    }
+
+    public ProdutoDTO atualizarEstoque(Long produtoId, Integer novoEstoque, String emailEmpresa) {
+        Produto produto = produtoRepository.findById(produtoId)
+                .orElseThrow(() -> new NotFoundException("Produto não encontrado"));
+
+        if (!produto.getEmpresa().getUsuario().getEmail().equals(emailEmpresa)) {
+            throw new BusinessException("Produto não pertence à empresa");
+        }
+
+        produto.setEstoque(novoEstoque);
+        produto = produtoRepository.save(produto);
+
+        return convertToDTO(produto);
+    }
+
+    public Map<String, Object> obterEstatisticasProdutos(String emailEmpresa) {
+        Empresa empresa = empresaRepository.findByEmail(emailEmpresa)
+                .orElseThrow(() -> new NotFoundException("Empresa não encontrada"));
+
+        Map<String, Object> stats = new HashMap<>();
+
+        Long totalProdutos = produtoRepository.countByEmpresaId(empresa.getId());
+        Long produtosAtivos = produtoRepository.countByEmpresaIdAndAtivoTrue(empresa.getId());
+        Long produtosBaixoEstoque = produtoRepository.countByEmpresaIdAndEstoqueLessThan(empresa.getId(), 10);
+
+        stats.put("totalProdutos", totalProdutos);
+        stats.put("produtosAtivos", produtosAtivos);
+        stats.put("produtosBaixoEstoque", produtosBaixoEstoque);
+
+        return stats;
+    }
+
+    public List<ProdutoDTO> listarProdutosBaixoEstoque(String emailEmpresa, int limite) {
+        Empresa empresa = empresaRepository.findByEmail(emailEmpresa)
+                .orElseThrow(() -> new NotFoundException("Empresa não encontrada"));
+
+        return produtoRepository.findByEmpresaIdAndEstoqueLessThanOrderByEstoque(empresa.getId(), limite)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
 }

@@ -47,4 +47,10 @@ public interface EmpresaRepository extends JpaRepository<Empresa, Long> {
     List<Empresa> findByLocalizacao(@Param("latitude") Double latitude,
                                     @Param("longitude") Double longitude,
                                     @Param("raioKm") Double raioKm);
+
+    @Query("SELECT COUNT(e) FROM Empresa e WHERE e.ativo = true")
+    Long countByAtivoTrue();
+
+    @Query("SELECT COUNT(e) FROM Empresa e WHERE e.categoria.id = :categoriaId")
+    Long countByCategoriaId(@Param("categoriaId") Long categoriaId);
 }

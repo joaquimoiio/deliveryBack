@@ -137,4 +137,62 @@ public class PedidoService {
 
         return dto;
     }
+
+    public PedidoDTO buscarPedidoDoCliente(Long pedidoId, String emailCliente) {
+        Cliente cliente = clienteRepository.findByEmail(emailCliente)
+                .orElseThrow(() -> new NotFoundException("Cliente não encontrado"));
+
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new NotFoundException("Pedido não encontrado"));
+
+        if (!pedido.getCliente().getId().equals(cliente.getId())) {
+            throw new BusinessException("Pedido não pertence ao cliente");
+        }
+
+        return convertToDTO(pedido);
+    }
+
+    public Page<PedidoDTO> listarPedidosClientePorStatus(String emailCliente, StatusPedido status, Pageable pageable) {
+        Cliente cliente = clienteRepository.findByEmail(emailCliente)
+                .orElseThrow(() -> new NotFoundException("Cliente não encontrado"));
+
+        return pedidoRepository.findByClienteIdAndStatus(cliente.getId(), status, pageable)
+                .map(this::convertToDTO);
+    }
+
+    public PedidoDTO cancelarPedido(Long pedidoId, String emailCliente) {
+        PedidoDTO pedido = buscarPedidoDoCliente(pedidoId, emailCliente);
+
+        if (pedido.getStatus() != StatusPedido.PENDENTE && pedido.getStatus() != StatusPedido.CONFIRMADO) {
+            throw new BusinessException("Não é possível cancelar este pedido");
+        }
+
+        return atualizarStatus(pedidoId, StatusPedido.CANCELADO, emailCliente);
+    }
+
+    public Map<String, Object> obterEstatisticasCliente(String emailCliente) {
+        Cliente cliente = clienteRepository.findByEmail(emailCliente)
+                .orElseThrow(() -> new NotFoundException("Cliente não encontrado"));
+
+        Map<String, Object> stats = new HashMap<>();
+
+        Long totalPedidos = pedidoRepository.countByClienteId(cliente.getId());
+        BigDecimal totalGasto = pedidoRepository.sumTotalByClienteId(cliente.getId());
+
+        stats.put("totalPedidos", totalPedidos);
+        stats.put("totalGasto", totalGasto != null ? totalGasto : BigDecimal.ZERO);
+
+        return stats;
+    }
+
+    public Map<String, Object> rastrearPedido(Long pedidoId, String emailCliente) {
+        PedidoDTO pedido = buscarPedidoDoCliente(pedidoId, emailCliente);
+
+        Map<String, Object> rastreamento = new HashMap<>();
+        rastreamento.put("pedido", pedido);
+        rastreamento.put("status", pedido.getStatus());
+        rastreamento.put("dataUltimaAtualizacao", pedido.getDataPedido());
+
+        return rastreamento;
+    }
 }

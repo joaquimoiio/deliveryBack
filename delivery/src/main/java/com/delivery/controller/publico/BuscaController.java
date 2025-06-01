@@ -47,69 +47,74 @@ public class BuscaController {
         return ResponseEntity.ok(empresas);
     }
 
+    @GetMapping("/empresas/categoria/{categoriaId}")
+    public ResponseEntity<Page<EmpresaDTO>> buscarEmpresasPorCategoria(
+            @PathVariable Long categoriaId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
 
-    Pageable pageable = PageRequest.of(page, size);
-    Page<EmpresaDTO> empresas = empresaService.buscarPorCategoria(categoriaId, pageable);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<EmpresaDTO> empresas = empresaService.buscarPorCategoria(categoriaId, pageable);
         return ResponseEntity.ok(empresas);
-}
+    }
 
-@GetMapping("/empresas/proximas")
-public ResponseEntity<List<EmpresaDTO>> buscarEmpresasProximas(
-        @RequestParam Double latitude,
-        @RequestParam Double longitude,
-        @RequestParam(defaultValue = "10.0") Double raioKm) {
+    @GetMapping("/empresas/proximas")
+    public ResponseEntity<List<EmpresaDTO>> buscarEmpresasProximas(
+            @RequestParam Double latitude,
+            @RequestParam Double longitude,
+            @RequestParam(defaultValue = "10.0") Double raioKm) {
 
-    List<EmpresaDTO> empresas = empresaService.buscarPorLocalizacao(latitude, longitude, raioKm);
-    return ResponseEntity.ok(empresas);
-}
+        List<EmpresaDTO> empresas = empresaService.buscarPorLocalizacao(latitude, longitude, raioKm);
+        return ResponseEntity.ok(empresas);
+    }
 
-@GetMapping("/empresas/{id}")
-public ResponseEntity<EmpresaDTO> buscarEmpresaPorId(@PathVariable Long id) {
-    EmpresaDTO empresa = empresaService.buscarPorId(id);
-    return ResponseEntity.ok(empresa);
-}
+    @GetMapping("/empresas/{id}")
+    public ResponseEntity<EmpresaDTO> buscarEmpresaPorId(@PathVariable Long id) {
+        EmpresaDTO empresa = empresaService.buscarPorId(id);
+        return ResponseEntity.ok(empresa);
+    }
 
-@GetMapping("/empresas/{empresaId}/produtos")
-public ResponseEntity<List<ProdutoDTO>> listarProdutosDaEmpresa(@PathVariable Long empresaId) {
-    List<ProdutoDTO> produtos = produtoService.listarProdutosPorEmpresa(empresaId);
-    return ResponseEntity.ok(produtos);
-}
+    @GetMapping("/empresas/{empresaId}/produtos")
+    public ResponseEntity<List<ProdutoDTO>> listarProdutosDaEmpresa(@PathVariable Long empresaId) {
+        List<ProdutoDTO> produtos = produtoService.listarProdutosPorEmpresa(empresaId);
+        return ResponseEntity.ok(produtos);
+    }
 
-@GetMapping("/produtos")
-public ResponseEntity<Page<ProdutoDTO>> listarProdutos(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "20") int size) {
+    @GetMapping("/produtos")
+    public ResponseEntity<Page<ProdutoDTO>> listarProdutos(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
 
-    Pageable pageable = PageRequest.of(page, size);
-    Page<ProdutoDTO> produtos = produtoService.listarTodos(pageable);
-    return ResponseEntity.ok(produtos);
-}
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProdutoDTO> produtos = produtoService.listarTodos(pageable);
+        return ResponseEntity.ok(produtos);
+    }
 
-@GetMapping("/produtos/buscar")
-public ResponseEntity<Page<ProdutoDTO>> buscarProdutos(
-        @RequestParam String termo,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "20") int size) {
+    @GetMapping("/produtos/buscar")
+    public ResponseEntity<Page<ProdutoDTO>> buscarProdutos(
+            @RequestParam String termo,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
 
-    Pageable pageable = PageRequest.of(page, size);
-    Page<ProdutoDTO> produtos = produtoService.buscarPorTermo(termo, pageable);
-    return ResponseEntity.ok(produtos);
-}
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProdutoDTO> produtos = produtoService.buscarPorTermo(termo, pageable);
+        return ResponseEntity.ok(produtos);
+    }
 
-@GetMapping("/produtos/categoria/{categoriaId}")
-public ResponseEntity<Page<ProdutoDTO>> buscarProdutosPorCategoria(
-        @PathVariable Long categoriaId,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "20") int size) {
+    @GetMapping("/produtos/categoria/{categoriaId}")
+    public ResponseEntity<Page<ProdutoDTO>> buscarProdutosPorCategoria(
+            @PathVariable Long categoriaId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
 
-    Pageable pageable = PageRequest.of(page, size);
-    Page<ProdutoDTO> produtos = produtoService.buscarPorCategoria(categoriaId, pageable);
-    return ResponseEntity.ok(produtos);
-}
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProdutoDTO> produtos = produtoService.buscarPorCategoria(categoriaId, pageable);
+        return ResponseEntity.ok(produtos);
+    }
 
-@GetMapping("/categorias")
-public ResponseEntity<List<CategoriaDTO>> listarCategorias() {
-    List<CategoriaDTO> categorias = catalogoService.listarCategorias();
-    return ResponseEntity.ok(categorias);
-}
+    @GetMapping("/categorias")
+    public ResponseEntity<List<CategoriaDTO>> listarCategorias() {
+        List<CategoriaDTO> categorias = catalogoService.listarCategorias();
+        return ResponseEntity.ok(categorias);
+    }
 }
