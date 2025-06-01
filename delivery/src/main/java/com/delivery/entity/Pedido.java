@@ -2,6 +2,7 @@ package com.delivery.entity;
 
 import com.delivery.entity.base.BaseEntity;
 import com.delivery.entity.enums.StatusPedido;
+import com.delivery.entity.enums.StatusPagamento;
 import com.delivery.entity.enums.FormaPagamento;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -34,6 +35,10 @@ public class Pedido extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusPedido status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_pagamento", nullable = false)
+    private StatusPagamento statusPagamento = StatusPagamento.PENDENTE;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "forma_pagamento", nullable = false)

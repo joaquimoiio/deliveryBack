@@ -1,5 +1,6 @@
 package com.delivery.controller.cliente;
 
+import com.delivery.dto.cliente.PagamentoDTO;
 import com.delivery.dto.cliente.PedidoDTO;
 import com.delivery.entity.enums.StatusPedido;
 import com.delivery.service.cliente.PedidoService;
@@ -86,5 +87,14 @@ public class PedidoClienteController {
 
         Map<String, Object> rastreamento = pedidoService.rastrearPedido(id, authentication.getName());
         return ResponseEntity.ok(rastreamento);
+    }
+
+    @PostMapping("/{id}/pagar")
+    public ResponseEntity<PedidoDTO> pagarPedido(
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        PedidoDTO pedido = pedidoService.pagarPedido(id, authentication.getName());
+        return ResponseEntity.ok(pedido);
     }
 }

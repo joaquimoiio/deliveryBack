@@ -12,15 +12,19 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
-    @Query("SELECT p FROM Pedido p WHERE p.cliente.id = :clienteId ORDER BY p.createdAt DESC")
+    @Query("SELECT DISTINCT p FROM Pedido p LEFT JOIN FETCH p.itens i LEFT JOIN FETCH i.produto WHERE p.cliente.id = :clienteId ORDER BY p.createdAt DESC")
     Page<Pedido> findByClienteId(@Param("clienteId") Long clienteId, Pageable pageable);
 
-    @Query("SELECT p FROM Pedido p WHERE p.empresa.id = :empresaId ORDER BY p.createdAt DESC")
+    @Query("SELECT DISTINCT p FROM Pedido p LEFT JOIN FETCH p.itens i LEFT JOIN FETCH i.produto WHERE p.empresa.id = :empresaId ORDER BY p.createdAt DESC")
     Page<Pedido> findByEmpresaId(@Param("empresaId") Long empresaId, Pageable pageable);
+
+    @Query("SELECT DISTINCT p FROM Pedido p LEFT JOIN FETCH p.itens i LEFT JOIN FETCH i.produto WHERE p.id = :id")
+    Optional<Pedido> findByIdWithItens(@Param("id") Long id);
 
     @Query("SELECT p FROM Pedido p WHERE p.empresa.id = :empresaId AND p.status = :status")
     List<Pedido> findByEmpresaIdAndStatus(@Param("empresaId") Long empresaId,
@@ -44,7 +48,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
                                                        @Param("inicio") LocalDateTime inicio,
                                                        @Param("fim") LocalDateTime fim);
 
-    @Query("SELECT p FROM Pedido p WHERE p.cliente.id = :clienteId AND p.status = :status ORDER BY p.createdAt DESC")
+    @Query("SELECT DISTINCT p FROM Pedido p LEFT JOIN FETCH p.itens i LEFT JOIN FETCH i.produto WHERE p.cliente.id = :clienteId AND p.status = :status ORDER BY p.createdAt DESC")
     Page<Pedido> findByClienteIdAndStatus(@Param("clienteId") Long clienteId, @Param("status") StatusPedido status, Pageable pageable);
 
     @Query("SELECT COUNT(p) FROM Pedido p WHERE p.cliente.id = :clienteId")

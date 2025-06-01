@@ -2,6 +2,7 @@ package com.delivery.service.cliente;
 
 import com.delivery.dto.cliente.PedidoDTO;
 import com.delivery.entity.*;
+import com.delivery.entity.enums.StatusPagamento;
 import com.delivery.entity.enums.StatusPedido;
 import com.delivery.exception.BusinessException;
 import com.delivery.exception.NotFoundException;
@@ -26,6 +27,7 @@ public class PedidoService {
     private final EmpresaRepository empresaRepository;
     private final ProdutoRepository produtoRepository;
 
+    @Transactional(readOnly = true)
     public Page<PedidoDTO> listarPedidosCliente(String emailCliente, Pageable pageable) {
         Cliente cliente = clienteRepository.findByEmail(emailCliente)
                 .orElseThrow(() -> new NotFoundException("Cliente não encontrado"));
@@ -34,6 +36,7 @@ public class PedidoService {
                 .map(this::convertToDTO);
     }
 
+    @Transactional(readOnly = true)
     public Page<PedidoDTO> listarPedidosEmpresa(String emailEmpresa, Pageable pageable) {
         Empresa empresa = empresaRepository.findByEmail(emailEmpresa)
                 .orElseThrow(() -> new NotFoundException("Empresa não encontrada"));
@@ -54,6 +57,7 @@ public class PedidoService {
         pedido.setCliente(cliente);
         pedido.setEmpresa(empresa);
         pedido.setStatus(StatusPedido.PENDENTE);
+        pedido.setStatusPagamento(StatusPagamento.PENDENTE); // ← Novo campo
         pedido.setFormaPagamento(pedidoDTO.getFormaPagamento());
         pedido.setObservacoes(pedidoDTO.getObservacoes());
         pedido.setEnderecoEntrega(pedidoDTO.getEnderecoEntrega());
@@ -110,11 +114,12 @@ public class PedidoService {
         return convertToDTO(pedido);
     }
 
+    @Transactional(readOnly = true)
     public PedidoDTO buscarPedidoDoCliente(Long pedidoId, String emailCliente) {
         Cliente cliente = clienteRepository.findByEmail(emailCliente)
                 .orElseThrow(() -> new NotFoundException("Cliente não encontrado"));
 
-        Pedido pedido = pedidoRepository.findById(pedidoId)
+        Pedido pedido = pedidoRepository.findByIdWithItens(pedidoId)
                 .orElseThrow(() -> new NotFoundException("Pedido não encontrado"));
 
         if (!pedido.getCliente().getId().equals(cliente.getId())) {
@@ -124,6 +129,7 @@ public class PedidoService {
         return convertToDTO(pedido);
     }
 
+    @Transactional(readOnly = true)
     public Page<PedidoDTO> listarPedidosClientePorStatus(String emailCliente, StatusPedido status, Pageable pageable) {
         Cliente cliente = clienteRepository.findByEmail(emailCliente)
                 .orElseThrow(() -> new NotFoundException("Cliente não encontrado"));
@@ -154,6 +160,7 @@ public class PedidoService {
         return convertToDTO(pedido);
     }
 
+    @Transactional(readOnly = true)
     public Map<String, Object> obterEstatisticasCliente(String emailCliente) {
         Cliente cliente = clienteRepository.findByEmail(emailCliente)
                 .orElseThrow(() -> new NotFoundException("Cliente não encontrado"));
@@ -169,6 +176,7 @@ public class PedidoService {
         return stats;
     }
 
+    @Transactional(readOnly = true)
     public Map<String, Object> rastrearPedido(Long pedidoId, String emailCliente) {
         PedidoDTO pedido = buscarPedidoDoCliente(pedidoId, emailCliente);
 
@@ -180,19 +188,22 @@ public class PedidoService {
         return rastreamento;
     }
 
-    private PedidoDTO convertToDTO(Pedido pedido) {
+    @Transactional(readOnly = true)
+    public PedidoDTO convertToDTO(Pedido pedido) {
         PedidoDTO dto = new PedidoDTO();
         dto.setId(pedido.getId());
         dto.setEmpresaId(pedido.getEmpresa().getId());
         dto.setNomeEmpresa(pedido.getEmpresa().getNomeFantasia());
         dto.setTotal(pedido.getTotal());
         dto.setStatus(pedido.getStatus());
+        dto.setStatusPagamento(pedido.getStatusPagamento()); // ← Novo campo
         dto.setFormaPagamento(pedido.getFormaPagamento());
         dto.setObservacoes(pedido.getObservacoes());
         dto.setEnderecoEntrega(pedido.getEnderecoEntrega());
         dto.setDataPedido(pedido.getCreatedAt());
 
-        if (pedido.getItens() != null) {
+        // Carregar itens dentro da transação
+        if (pedido.getItens() != null && !pedido.getItens().isEmpty()) {
             List<PedidoDTO.ItemPedidoDTO> itensDTO = pedido.getItens().stream()
                     .map(item -> {
                         PedidoDTO.ItemPedidoDTO itemDTO = new PedidoDTO.ItemPedidoDTO();
@@ -208,5 +219,37 @@ public class PedidoService {
         }
 
         return dto;
+    }
+
+    @Transactional
+    public PedidoDTO pagarPedido(Long pedidoId, String emailCliente) {
+        Cliente cliente = clienteRepository.findByEmail(emailCliente)
+                .orElseThrow(() -> new NotFoundException("Cliente não encontrado"));
+
+        Pedido pedido = pedidoRepository.findByIdWithItens(pedidoId)
+                .orElseThrow(() -> new NotFoundException("Pedido não encontrado"));
+
+        // Verificar se o pedido pertence ao cliente
+        if (!pedido.getCliente().getId().equals(cliente.getId())) {
+            throw new BusinessException("Pedido não pertence ao cliente");
+        }
+
+        // Verificar se o pedido pode ser pago
+        if (pedido.getStatus() != StatusPedido.PENDENTE) {
+            throw new BusinessException("Apenas pedidos pendentes podem ser pagos");
+        }
+
+        if (pedido.getStatusPagamento() == StatusPagamento.PAGO) {
+            throw new BusinessException("Este pedido já foi pago");
+        }
+
+        // Simular pagamento - sempre aprova
+        pedido.setStatusPagamento(StatusPagamento.PAGO);
+
+        // Automaticamente confirma o pedido quando é pago
+        pedido.setStatus(StatusPedido.CONFIRMADO);
+        pedido = pedidoRepository.save(pedido);
+
+        return convertToDTO(pedido);
     }
 }

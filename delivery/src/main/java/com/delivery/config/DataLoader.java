@@ -7,12 +7,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 // import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
-// @Component  // ← COMENTADO TEMPORARIAMENTE
+@Component  // ← COMENTADO TEMPORARIAMENTE
 @RequiredArgsConstructor
 @Slf4j
 public class DataLoader implements CommandLineRunner {

@@ -1,6 +1,7 @@
 package com.delivery.dto.cliente;
 
 import com.delivery.entity.enums.StatusPedido;
+import com.delivery.entity.enums.StatusPagamento;
 import com.delivery.entity.enums.FormaPagamento;
 import lombok.Data;
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ public class PedidoDTO {
     private String nomeEmpresa;
     private BigDecimal total;
     private StatusPedido status;
+    private StatusPagamento statusPagamento;
     private FormaPagamento formaPagamento;
     private String observacoes;
     private String enderecoEntrega;
