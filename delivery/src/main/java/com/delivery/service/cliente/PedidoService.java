@@ -195,6 +195,22 @@ public class PedidoService {
         return convertToDTO(pedido);
     }
 
+    @Transactional
+    public PedidoDTO marcarComoCancelado(Long pedidoId, String emailEmpresa) {
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new NotFoundException("Pedido não encontrado"));
+
+        // Verificar se o pedido pertence à empresa
+        if (!pedido.getEmpresa().getUsuario().getEmail().equals(emailEmpresa)) {
+            throw new BusinessException("Pedido não pertence à empresa");
+        }
+
+        pedido.setStatus(StatusPedido.CANCELADO);
+        pedido = pedidoRepository.save(pedido);
+
+        return convertToDTO(pedido);
+    }
+
     @Transactional(readOnly = true)
     public PedidoDTO convertToDTO(Pedido pedido) {
         PedidoDTO dto = new PedidoDTO();
