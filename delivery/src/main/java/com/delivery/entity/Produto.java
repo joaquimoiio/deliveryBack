@@ -28,7 +28,7 @@ public class Produto extends BaseEntity {
     @Column(length = 1000)
     private String descricao;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false)
     private BigDecimal preco;
 
     @Column(name = "imagem_url")
@@ -38,8 +38,6 @@ public class Produto extends BaseEntity {
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
-    @Column(nullable = false)
-    private Integer estoque = 0;
 
     @Column(nullable = false)
     private Boolean ativo = true;

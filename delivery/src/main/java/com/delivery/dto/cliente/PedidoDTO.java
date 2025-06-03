@@ -19,6 +19,8 @@ public class PedidoDTO {
     private FormaPagamento formaPagamento;
     private String observacoes;
     private String enderecoEntrega;
+    private Double latitude;
+    private Double longitude;
     private LocalDateTime dataPedido;
     private List<ItemPedidoDTO> itens;
 

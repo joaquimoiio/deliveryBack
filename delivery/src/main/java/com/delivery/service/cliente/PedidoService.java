@@ -68,11 +68,6 @@ public class PedidoService {
             Produto produto = produtoRepository.findById(itemDTO.getProdutoId())
                     .orElseThrow(() -> new NotFoundException("Produto não encontrado"));
 
-            // Verificar estoque
-            if (produto.getEstoque() < itemDTO.getQuantidade()) {
-                throw new BusinessException("Estoque insuficiente para o produto: " + produto.getNome());
-            }
-
             ItemPedido item = new ItemPedido();
             item.setPedido(pedido);
             item.setProduto(produto);
@@ -81,10 +76,6 @@ public class PedidoService {
             item.setSubtotal(produto.getPreco().multiply(BigDecimal.valueOf(itemDTO.getQuantidade())));
 
             total = total.add(item.getSubtotal());
-
-            // Reduzir estoque
-            produto.setEstoque(produto.getEstoque() - itemDTO.getQuantidade());
-            produtoRepository.save(produto);
 
             if (pedido.getItens() == null) {
                 pedido.setItens(new java.util.ArrayList<>());
@@ -186,6 +177,22 @@ public class PedidoService {
         rastreamento.put("dataUltimaAtualizacao", pedido.getDataPedido());
 
         return rastreamento;
+    }
+
+    @Transactional
+    public PedidoDTO marcarComoEntregue(Long pedidoId, String emailEmpresa) {
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new NotFoundException("Pedido não encontrado"));
+
+        // Verificar se o pedido pertence à empresa
+        if (!pedido.getEmpresa().getUsuario().getEmail().equals(emailEmpresa)) {
+            throw new BusinessException("Pedido não pertence à empresa");
+        }
+
+        pedido.setStatus(StatusPedido.ENTREGUE);
+        pedido = pedidoRepository.save(pedido);
+
+        return convertToDTO(pedido);
     }
 
     @Transactional(readOnly = true)

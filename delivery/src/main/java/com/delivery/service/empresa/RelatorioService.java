@@ -122,11 +122,9 @@ public class RelatorioService {
         // Produtos
         Long totalProdutos = produtoRepository.countByEmpresaId(empresa.getId());
         Long produtosAtivos = produtoRepository.countByEmpresaIdAndAtivoTrue(empresa.getId());
-        Long produtosBaixoEstoque = produtoRepository.countByEmpresaIdAndEstoqueLessThan(empresa.getId(), 10);
 
         dashboard.put("totalProdutos", totalProdutos);
         dashboard.put("produtosAtivos", produtosAtivos);
-        dashboard.put("produtosBaixoEstoque", produtosBaixoEstoque);
 
         // Avaliações
         Double avaliacaoMedia = feedbackRepository.findAvaliacaoMediaByEmpresaId(empresa.getId());

@@ -11,8 +11,8 @@ public class ProdutoDTO {
     private String descricao;
     private BigDecimal preco;
     private String imagemUrl;
-    private Integer estoque;
     private Boolean ativo;
     private CategoriaDTO categoria;
+    private Long categoriaId;
     private Long empresaId;
 }

@@ -29,7 +29,7 @@ public class Pedido extends BaseEntity {
     @JoinColumn(name = "empresa_id", nullable = false)
     private Empresa empresa;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false)
     private BigDecimal total;
 
     @Enumerated(EnumType.STRING)
@@ -47,8 +47,14 @@ public class Pedido extends BaseEntity {
     @Column(length = 500)
     private String observacoes;
 
-    @Column(name = "endereco_entrega", length = 500)
+    @Column(name = "endereco_entrega")
     private String enderecoEntrega;
+
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemPedido> itens;

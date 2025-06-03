@@ -31,6 +31,14 @@ public class EmpresaController {
         return ResponseEntity.ok(empresa);
     }
 
+    @PutMapping("/perfil")
+    public ResponseEntity<EmpresaDTO> atualizarPerfil(
+            @RequestBody EmpresaDTO empresaDTO,
+            Authentication authentication) {
+        EmpresaDTO empresaAtualizada = empresaService.atualizarPerfil(authentication.getName(), empresaDTO);
+        return ResponseEntity.ok(empresaAtualizada);
+    }
+
     @GetMapping("/relatorio")
     public ResponseEntity<RelatorioDTO> obterRelatorio(
             Authentication authentication,
@@ -62,6 +70,15 @@ public class EmpresaController {
             Authentication authentication) {
 
         PedidoDTO pedido = pedidoService.atualizarStatus(id, status, authentication.getName());
+        return ResponseEntity.ok(pedido);
+    }
+
+    @PatchMapping("/pedidos/{id}/entregar")
+    public ResponseEntity<PedidoDTO> marcarPedidoComoEntregue(
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        PedidoDTO pedido = pedidoService.marcarComoEntregue(id, authentication.getName());
         return ResponseEntity.ok(pedido);
     }
 }

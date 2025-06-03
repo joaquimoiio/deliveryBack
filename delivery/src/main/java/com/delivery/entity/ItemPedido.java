@@ -28,9 +28,9 @@ public class ItemPedido extends BaseEntity {
     @Column(nullable = false)
     private Integer quantidade;
 
-    @Column(name = "preco_unitario", nullable = false, precision = 10, scale = 2)
+    @Column(name = "preco_unitario", nullable = false)
     private BigDecimal precoUnitario;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false)
     private BigDecimal subtotal;
 }

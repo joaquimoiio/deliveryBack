@@ -30,7 +30,8 @@ public class ProdutoService {
         Empresa empresa = empresaRepository.findByEmail(emailEmpresa)
                 .orElseThrow(() -> new NotFoundException("Empresa não encontrada"));
 
-        return produtoRepository.findByEmpresaIdAndAtivoTrue(empresa.getId())
+        // Buscar todos os produtos da empresa (incluindo inativos para o painel de administração)
+        return produtoRepository.findByEmpresaId(empresa.getId())
                 .stream()
                 .map(this::convertToDTO)
                 .toList();
@@ -69,11 +70,18 @@ public class ProdutoService {
         produto.setDescricao(produtoDTO.getDescricao());
         produto.setPreco(produtoDTO.getPreco());
         produto.setImagemUrl(produtoDTO.getImagemUrl());
-        produto.setEstoque(produtoDTO.getEstoque() != null ? produtoDTO.getEstoque() : 0);
-        produto.setAtivo(true);
+        produto.setAtivo(produtoDTO.getAtivo() != null ? produtoDTO.getAtivo() : true);
 
-        if (produtoDTO.getCategoria() != null && produtoDTO.getCategoria().getId() != null) {
-            produto.setCategoria(categoriaRepository.findById(produtoDTO.getCategoria().getId())
+        // Verificar se categoriaId foi fornecido diretamente ou através do objeto categoria
+        Long categoriaId = null;
+        if (produtoDTO.getCategoriaId() != null) {
+            categoriaId = produtoDTO.getCategoriaId();
+        } else if (produtoDTO.getCategoria() != null && produtoDTO.getCategoria().getId() != null) {
+            categoriaId = produtoDTO.getCategoria().getId();
+        }
+
+        if (categoriaId != null) {
+            produto.setCategoria(categoriaRepository.findById(categoriaId)
                     .orElseThrow(() -> new NotFoundException("Categoria não encontrada")));
         }
 
@@ -95,8 +103,20 @@ public class ProdutoService {
         produto.setDescricao(produtoDTO.getDescricao());
         produto.setPreco(produtoDTO.getPreco());
         produto.setImagemUrl(produtoDTO.getImagemUrl());
-        produto.setEstoque(produtoDTO.getEstoque());
         produto.setAtivo(produtoDTO.getAtivo());
+
+        // Verificar se categoriaId foi fornecido diretamente ou através do objeto categoria
+        Long categoriaId = null;
+        if (produtoDTO.getCategoriaId() != null) {
+            categoriaId = produtoDTO.getCategoriaId();
+        } else if (produtoDTO.getCategoria() != null && produtoDTO.getCategoria().getId() != null) {
+            categoriaId = produtoDTO.getCategoria().getId();
+        }
+
+        if (categoriaId != null) {
+            produto.setCategoria(categoriaRepository.findById(categoriaId)
+                    .orElseThrow(() -> new NotFoundException("Categoria não encontrada")));
+        }
 
         produto = produtoRepository.save(produto);
         return convertToDTO(produto);
@@ -150,21 +170,6 @@ public class ProdutoService {
         return convertToDTO(produto);
     }
 
-    @Transactional
-    public ProdutoDTO atualizarEstoque(Long produtoId, Integer novoEstoque, String emailEmpresa) {
-        Produto produto = produtoRepository.findById(produtoId)
-                .orElseThrow(() -> new NotFoundException("Produto não encontrado"));
-
-        if (!produto.getEmpresa().getUsuario().getEmail().equals(emailEmpresa)) {
-            throw new BusinessException("Produto não pertence à empresa");
-        }
-
-        produto.setEstoque(novoEstoque);
-        produto = produtoRepository.save(produto);
-
-        return convertToDTO(produto);
-    }
-
     public Map<String, Object> obterEstatisticasProdutos(String emailEmpresa) {
         Empresa empresa = empresaRepository.findByEmail(emailEmpresa)
                 .orElseThrow(() -> new NotFoundException("Empresa não encontrada"));
@@ -173,24 +178,13 @@ public class ProdutoService {
 
         Long totalProdutos = produtoRepository.countByEmpresaId(empresa.getId());
         Long produtosAtivos = produtoRepository.countByEmpresaIdAndAtivoTrue(empresa.getId());
-        Long produtosBaixoEstoque = produtoRepository.countByEmpresaIdAndEstoqueLessThan(empresa.getId(), 10);
 
         stats.put("totalProdutos", totalProdutos);
         stats.put("produtosAtivos", produtosAtivos);
-        stats.put("produtosBaixoEstoque", produtosBaixoEstoque);
 
         return stats;
     }
 
-    public List<ProdutoDTO> listarProdutosBaixoEstoque(String emailEmpresa, int limite) {
-        Empresa empresa = empresaRepository.findByEmail(emailEmpresa)
-                .orElseThrow(() -> new NotFoundException("Empresa não encontrada"));
-
-        return produtoRepository.findByEmpresaIdAndEstoqueLessThanOrderByEstoque(empresa.getId(), limite)
-                .stream()
-                .map(this::convertToDTO)
-                .toList();
-    }
 
     public Long contarProdutosAtivos() {
         return produtoRepository.countByAtivoTrue();
@@ -203,8 +197,7 @@ public class ProdutoService {
         dto.setDescricao(produto.getDescricao());
         dto.setPreco(produto.getPreco());
         dto.setImagemUrl(produto.getImagemUrl());
-        dto.setEstoque(produto.getEstoque());
-        dto.setAtivo(produto.getAtivo());
+        dto.setAtivo(produto.getAtivo() != null ? produto.getAtivo() : true);
         dto.setEmpresaId(produto.getEmpresa().getId());
 
         if (produto.getCategoria() != null) {
@@ -214,6 +207,7 @@ public class ProdutoService {
             categoriaDTO.setSlug(produto.getCategoria().getSlug());
             categoriaDTO.setIcone(produto.getCategoria().getIcone());
             dto.setCategoria(categoriaDTO);
+            dto.setCategoriaId(produto.getCategoria().getId());
         }
 
         return dto;

@@ -156,13 +156,6 @@ public class ValidationUtils {
     }
 
     /**
-     * Valida estoque
-     */
-    public static boolean isEstoqueValido(Integer estoque) {
-        return estoque != null && estoque >= 0;
-    }
-
-    /**
      * Valida senha
      */
     public static boolean isSenhaValida(String senha) {

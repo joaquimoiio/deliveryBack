@@ -95,16 +95,6 @@ public class ProdutoEmpresaController {
         return ResponseEntity.ok(produto);
     }
 
-    @PatchMapping("/{id}/estoque")
-    public ResponseEntity<ProdutoDTO> atualizarEstoque(
-            @PathVariable Long id,
-            @RequestBody Map<String, Integer> request,
-            Authentication authentication) {
-
-        Integer novoEstoque = request.get("estoque");
-        ProdutoDTO produto = produtoService.atualizarEstoque(id, novoEstoque, authentication.getName());
-        return ResponseEntity.ok(produto);
-    }
 
     @GetMapping("/estatisticas")
     public ResponseEntity<Map<String, Object>> obterEstatisticasProdutos(Authentication authentication) {
@@ -112,13 +102,4 @@ public class ProdutoEmpresaController {
         return ResponseEntity.ok(stats);
     }
 
-    @GetMapping("/baixo-estoque")
-    public ResponseEntity<List<ProdutoDTO>> listarProdutosBaixoEstoque(
-            Authentication authentication,
-            @RequestParam(defaultValue = "10") int limite) {
-
-        List<ProdutoDTO> produtos = produtoService.listarProdutosBaixoEstoque(
-                authentication.getName(), limite);
-        return ResponseEntity.ok(produtos);
-    }
 }

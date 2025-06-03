@@ -59,6 +59,40 @@ public class EmpresaService {
         return convertToDTO(empresa);
     }
 
+    public EmpresaDTO atualizarPerfil(String email, EmpresaDTO empresaDTO) {
+        Empresa empresa = empresaRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Empresa não encontrada"));
+
+        // Atualizar campos permitidos
+        if (empresaDTO.getNomeFantasia() != null) {
+            empresa.setNomeFantasia(empresaDTO.getNomeFantasia());
+        }
+        if (empresaDTO.getCnpj() != null) {
+            empresa.setCnpj(empresaDTO.getCnpj());
+        }
+        if (empresaDTO.getTelefone() != null) {
+            empresa.setTelefone(empresaDTO.getTelefone());
+        }
+        if (empresaDTO.getEndereco() != null) {
+            empresa.setEndereco(empresaDTO.getEndereco());
+        }
+        if (empresaDTO.getLatitude() != null) {
+            empresa.setLatitude(empresaDTO.getLatitude());
+        }
+        if (empresaDTO.getLongitude() != null) {
+            empresa.setLongitude(empresaDTO.getLongitude());
+        }
+        if (empresaDTO.getLogoUrl() != null) {
+            empresa.setLogoUrl(empresaDTO.getLogoUrl());
+        }
+        if (empresaDTO.getDescricao() != null) {
+            empresa.setDescricao(empresaDTO.getDescricao());
+        }
+
+        Empresa empresaAtualizada = empresaRepository.save(empresa);
+        return convertToDTO(empresaAtualizada);
+    }
+
     public Long contarEmpresasAtivas() {
         return empresaRepository.countByAtivoTrue();
     }
