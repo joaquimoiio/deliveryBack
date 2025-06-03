@@ -107192,3 +107192,167 @@ org.springframework.security.core.userdetails.UsernameNotFoundException: Usuári
         usuarios u1_0 
     where
         u1_0.email=?
+2025-06-02 23:27:48 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.id,
+        c1_0.ativo,
+        c1_0.created_at,
+        c1_0.descricao,
+        c1_0.icone,
+        c1_0.nome,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categorias c1_0 
+    where
+        c1_0.ativo=1 
+    order by
+        c1_0.nome
+2025-06-02 23:27:48 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        u1_0.id,
+        u1_0.ativo,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.senha,
+        u1_0.tipo_usuario,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2025-06-02 23:27:48 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.id,
+        c1_0.ativo,
+        c1_0.created_at,
+        c1_0.descricao,
+        c1_0.icone,
+        c1_0.nome,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categorias c1_0 
+    where
+        c1_0.ativo=1 
+    order by
+        c1_0.nome
+2025-06-02 23:27:50 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    select
+        u1_0.id,
+        u1_0.ativo,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.senha,
+        u1_0.tipo_usuario,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2025-06-02 23:27:50 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.id,
+        c1_0.ativo,
+        c1_0.created_at,
+        c1_0.descricao,
+        c1_0.icone,
+        c1_0.nome,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categorias c1_0 
+    where
+        c1_0.ativo=1 
+    order by
+        c1_0.nome
+2025-06-02 23:27:50 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        u1_0.id,
+        u1_0.ativo,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.senha,
+        u1_0.tipo_usuario,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2025-06-02 23:27:50 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.id,
+        c1_0.ativo,
+        c1_0.created_at,
+        c1_0.descricao,
+        c1_0.icone,
+        c1_0.nome,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categorias c1_0 
+    where
+        c1_0.ativo=1 
+    order by
+        c1_0.nome
+2025-06-02 23:27:52 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        u1_0.id,
+        u1_0.ativo,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.senha,
+        u1_0.tipo_usuario,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2025-06-02 23:27:52 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.id,
+        c1_0.ativo,
+        c1_0.created_at,
+        c1_0.descricao,
+        c1_0.icone,
+        c1_0.nome,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categorias c1_0 
+    where
+        c1_0.ativo=1 
+    order by
+        c1_0.nome
+2025-06-02 23:27:52 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        u1_0.id,
+        u1_0.ativo,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.senha,
+        u1_0.tipo_usuario,
+        u1_0.updated_at 
+    from
+        usuarios u1_0 
+    where
+        u1_0.email=?
+2025-06-02 23:27:52 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.id,
+        c1_0.ativo,
+        c1_0.created_at,
+        c1_0.descricao,
+        c1_0.icone,
+        c1_0.nome,
+        c1_0.slug,
+        c1_0.updated_at 
+    from
+        categorias c1_0 
+    where
+        c1_0.ativo=1 
+    order by
+        c1_0.nome
+2025-06-02 23:32:14 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-06-02 23:32:14 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-06-02 23:32:14 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
