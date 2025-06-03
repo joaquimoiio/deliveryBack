@@ -5,7 +5,7 @@ public enum CategoriaEnum {
     LANCHONETE("Lanchonete", "lanchonete", "🍔"),
     PIZZARIA("Pizzaria", "pizzaria", "🍕"),
     HAMBURGUERIA("Hamburgueria", "hamburgueria", "🍔"),
-    JAPONESA("Comida Japonesa", "japonesa", "🍣"),
+    JAPONESA("Comida Japonesa", "comida-japonesa", "🍣"),
     ITALIANA("Comida Italiana", "italiana", "🍝"),
     CHINESA("Comida Chinesa", "chinesa", "🥢"),
     BRASILEIRA("Comida Brasileira", "brasileira", "🍖"),
