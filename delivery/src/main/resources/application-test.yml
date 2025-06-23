@@ -1,0 +1,35 @@
+spring:
+  # Banco MySQL para testes
+  datasource:
+    url: jdbc:mysql://localhost:3306/delivery_test_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Sao_Paulo
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 5  # Menor pool para testes
+      minimum-idle: 1
+
+  # JPA para testes com MySQL
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: create-drop  # Recria o banco a cada teste
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.MySQLDialect
+
+# JWT para testes (mesmo do desenvolvimento)
+jwt:
+  secret: bXlTZWNyZXRLZXlGb3JKV1RUb2tlbkdlbmVyYXRpb25BbmRWYWxpZGF0aW9uUHVycG9zZXM=
+  expiration: 86400000
+
+# Logs reduzidos para testes
+logging:
+  level:
+    root: WARN
+    com.delivery: INFO
+    org.springframework.security: WARN

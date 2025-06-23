@@ -116776,3 +116776,378 @@ org.springframework.security.core.userdetails.UsernameNotFoundException: Usuári
         f1_0.created_at desc 
     limit
         ?, ?
+2025-06-23 07:37:19 [main] INFO  com.delivery.DeliveryApplication - Starting DeliveryApplication using Java 17.0.15 with PID 16740 (C:\Git\deliveryBack\delivery\target\classes started by joaqu in C:\Git\deliveryBack\delivery)
+2025-06-23 07:37:19 [main] DEBUG com.delivery.DeliveryApplication - Running with Spring Boot v3.2.0, Spring v6.1.1
+2025-06-23 07:37:19 [main] INFO  com.delivery.DeliveryApplication - No active profile set, falling back to 1 default profile: "default"
+2025-06-23 07:37:19 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-23 07:37:19 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 42 ms. Found 7 JPA repository interfaces.
+2025-06-23 07:37:20 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-06-23 07:37:20 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-06-23 07:37:20 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.16]
+2025-06-23 07:37:20 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-06-23 07:37:20 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1502 ms
+2025-06-23 07:37:20 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-06-23 07:37:20 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7b96de8d
+2025-06-23 07:37:20 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-06-23 07:37:21 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-06-23 07:37:21 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.3.1.Final
+2025-06-23 07:37:21 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-06-23 07:37:21 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-06-23 07:37:21 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-06-23 07:37:22 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    create table categorias (
+        id bigint not null auto_increment,
+        created_at datetime(6) not null,
+        updated_at datetime(6),
+        ativo bit not null,
+        descricao varchar(500),
+        icone varchar(255),
+        nome varchar(255) not null,
+        slug varchar(255) not null,
+        primary key (id)
+    ) engine=InnoDB
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    create table clientes (
+        id bigint not null auto_increment,
+        created_at datetime(6) not null,
+        updated_at datetime(6),
+        cpf varchar(255) not null,
+        endereco varchar(500),
+        latitude float(53),
+        longitude float(53),
+        nome varchar(255) not null,
+        telefone varchar(255),
+        usuario_id bigint not null,
+        primary key (id)
+    ) engine=InnoDB
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    create table empresas (
+        id bigint not null auto_increment,
+        created_at datetime(6) not null,
+        updated_at datetime(6),
+        ativo bit not null,
+        cnpj varchar(255) not null,
+        descricao varchar(1000),
+        endereco varchar(500),
+        latitude float(53),
+        logo_url varchar(255),
+        longitude float(53),
+        nome_fantasia varchar(255) not null,
+        telefone varchar(255),
+        categoria_id bigint,
+        usuario_id bigint not null,
+        primary key (id)
+    ) engine=InnoDB
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    create table feedbacks (
+        id bigint not null auto_increment,
+        created_at datetime(6) not null,
+        updated_at datetime(6),
+        comentario varchar(1000),
+        nota integer not null,
+        cliente_id bigint not null,
+        empresa_id bigint not null,
+        pedido_id bigint not null,
+        primary key (id)
+    ) engine=InnoDB
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    create table itens_pedido (
+        id bigint not null auto_increment,
+        created_at datetime(6) not null,
+        updated_at datetime(6),
+        preco_unitario decimal(38,2) not null,
+        quantidade integer not null,
+        subtotal decimal(38,2) not null,
+        pedido_id bigint not null,
+        produto_id bigint not null,
+        primary key (id)
+    ) engine=InnoDB
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    create table pedidos (
+        id bigint not null auto_increment,
+        created_at datetime(6) not null,
+        updated_at datetime(6),
+        endereco_entrega varchar(255),
+        forma_pagamento enum ('DINHEIRO','CARTAO_CREDITO','CARTAO_DEBITO','PIX') not null,
+        latitude float(53),
+        longitude float(53),
+        observacoes varchar(500),
+        status enum ('PENDENTE','CONFIRMADO','PREPARANDO','PRONTO','ENTREGUE','CANCELADO') not null,
+        status_pagamento enum ('PENDENTE','PAGO','CANCELADO') not null,
+        total decimal(38,2) not null,
+        cliente_id bigint not null,
+        empresa_id bigint not null,
+        primary key (id)
+    ) engine=InnoDB
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    create table produtos (
+        id bigint not null auto_increment,
+        created_at datetime(6) not null,
+        updated_at datetime(6),
+        ativo bit not null,
+        descricao varchar(1000),
+        imagem_url varchar(255),
+        nome varchar(255) not null,
+        preco decimal(38,2) not null,
+        categoria_id bigint,
+        empresa_id bigint not null,
+        primary key (id)
+    ) engine=InnoDB
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    create table usuarios (
+        id bigint not null auto_increment,
+        created_at datetime(6) not null,
+        updated_at datetime(6),
+        ativo bit not null,
+        email varchar(255) not null,
+        senha varchar(255) not null,
+        tipo_usuario enum ('CLIENTE','EMPRESA') not null,
+        primary key (id)
+    ) engine=InnoDB
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    alter table categorias 
+       drop index UK_9qte5svl2i6n82lpdyyheoi1h
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    alter table categorias 
+       add constraint UK_9qte5svl2i6n82lpdyyheoi1h unique (nome)
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    alter table categorias 
+       drop index UK_7a8rqmhb8umdlquyud4j0j2xt
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    alter table categorias 
+       add constraint UK_7a8rqmhb8umdlquyud4j0j2xt unique (slug)
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    alter table clientes 
+       drop index UK_7wflw78ibh162cmq12ii6ffly
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    alter table clientes 
+       add constraint UK_7wflw78ibh162cmq12ii6ffly unique (cpf)
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    alter table clientes 
+       drop index UK_96x1n5ut15ns1xhkm87y7qhnd
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    alter table clientes 
+       add constraint UK_96x1n5ut15ns1xhkm87y7qhnd unique (usuario_id)
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    alter table empresas 
+       drop index UK_dlxi0rufl6e9lwbo6fkcd5kp5
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    alter table empresas 
+       add constraint UK_dlxi0rufl6e9lwbo6fkcd5kp5 unique (cnpj)
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    alter table empresas 
+       drop index UK_a1bdrk80mj5pb9r8emyhgf82n
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    alter table empresas 
+       add constraint UK_a1bdrk80mj5pb9r8emyhgf82n unique (usuario_id)
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    alter table feedbacks 
+       drop index UK_fv39u1pf7035jjhhy0y97a185
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    alter table feedbacks 
+       add constraint UK_fv39u1pf7035jjhhy0y97a185 unique (pedido_id)
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    alter table usuarios 
+       drop index UK_kfsp0s1tflm1cwlj8idhqsad0
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    alter table usuarios 
+       add constraint UK_kfsp0s1tflm1cwlj8idhqsad0 unique (email)
+2025-06-23 07:37:22 [main] DEBUG org.hibernate.SQL - 
+    alter table clientes 
+       add constraint FKk6iwsq3kts1bblivkjy6epajx 
+       foreign key (usuario_id) 
+       references usuarios (id)
+2025-06-23 07:37:23 [main] DEBUG org.hibernate.SQL - 
+    alter table empresas 
+       add constraint FKh6tyvd88sfnh71elhtgwu9dem 
+       foreign key (categoria_id) 
+       references categorias (id)
+2025-06-23 07:37:23 [main] DEBUG org.hibernate.SQL - 
+    alter table empresas 
+       add constraint FK18r3jxa6l8a3wi8dngya6kx9t 
+       foreign key (usuario_id) 
+       references usuarios (id)
+2025-06-23 07:37:23 [main] DEBUG org.hibernate.SQL - 
+    alter table feedbacks 
+       add constraint FKu5ev7l5iufp8guc0nkucrb8h 
+       foreign key (cliente_id) 
+       references clientes (id)
+2025-06-23 07:37:23 [main] DEBUG org.hibernate.SQL - 
+    alter table feedbacks 
+       add constraint FKfas1vodhkm672wouiqlqdjxq0 
+       foreign key (empresa_id) 
+       references empresas (id)
+2025-06-23 07:37:23 [main] DEBUG org.hibernate.SQL - 
+    alter table feedbacks 
+       add constraint FKk622gbfxpf0gqu4jsfwx82kdg 
+       foreign key (pedido_id) 
+       references pedidos (id)
+2025-06-23 07:37:23 [main] DEBUG org.hibernate.SQL - 
+    alter table itens_pedido 
+       add constraint FK42mycompce3b7yt3l6ukdwsxy 
+       foreign key (pedido_id) 
+       references pedidos (id)
+2025-06-23 07:37:23 [main] DEBUG org.hibernate.SQL - 
+    alter table itens_pedido 
+       add constraint FKxytdlekpdaobqphujy9bmuhl 
+       foreign key (produto_id) 
+       references produtos (id)
+2025-06-23 07:37:23 [main] DEBUG org.hibernate.SQL - 
+    alter table pedidos 
+       add constraint FKg7202lk0hwxn04bmdl2thth5b 
+       foreign key (cliente_id) 
+       references clientes (id)
+2025-06-23 07:37:23 [main] DEBUG org.hibernate.SQL - 
+    alter table pedidos 
+       add constraint FK3nmnljw4q0h3q18n515ygkm1x 
+       foreign key (empresa_id) 
+       references empresas (id)
+2025-06-23 07:37:23 [main] DEBUG org.hibernate.SQL - 
+    alter table produtos 
+       add constraint FK8rqw0ljwdaom34jr2t46bjtrn 
+       foreign key (categoria_id) 
+       references categorias (id)
+2025-06-23 07:37:23 [main] DEBUG org.hibernate.SQL - 
+    alter table produtos 
+       add constraint FKjdpums39q9pumgggrgnglm1rg 
+       foreign key (empresa_id) 
+       references empresas (id)
+2025-06-23 07:37:23 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-06-23 07:37:23 [main] DEBUG c.d.security.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-06-23 07:37:23 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-06-23 07:37:25 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@6f102740, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@529e1192, org.springframework.security.web.context.SecurityContextHolderFilter@7d6406c8, org.springframework.security.web.header.HeaderWriterFilter@2275d28a, org.springframework.web.filter.CorsFilter@3284a02f, org.springframework.security.web.authentication.logout.LogoutFilter@2c720867, com.delivery.security.JwtAuthenticationFilter@3b38f032, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@4a9d481b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@129e6f3a, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@32f7b6a2, org.springframework.security.web.session.SessionManagementFilter@5eef570, org.springframework.security.web.access.ExceptionTranslationFilter@6534f871, org.springframework.security.web.access.intercept.AuthorizationFilter@b76d8a8]
+2025-06-23 07:37:25 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2025-06-23 07:37:25 [main] INFO  com.delivery.DeliveryApplication - Started DeliveryApplication in 6.771 seconds (process running for 7.761)
+2025-06-23 07:37:25 [main] INFO  com.delivery.config.DataLoader - Iniciando carregamento de dados...
+2025-06-23 07:37:25 [main] DEBUG org.hibernate.SQL - 
+    select
+        count(*) 
+    from
+        categorias c1_0
+2025-06-23 07:37:25 [main] INFO  com.delivery.config.DataLoader - Categorias existentes no banco: 0
+2025-06-23 07:37:25 [main] INFO  com.delivery.config.DataLoader - Carregando categorias básicas...
+2025-06-23 07:37:25 [main] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        categorias
+        (ativo, created_at, descricao, icone, nome, slug, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2025-06-23 07:37:25 [main] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        categorias
+        (ativo, created_at, descricao, icone, nome, slug, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2025-06-23 07:37:25 [main] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        categorias
+        (ativo, created_at, descricao, icone, nome, slug, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2025-06-23 07:37:25 [main] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        categorias
+        (ativo, created_at, descricao, icone, nome, slug, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2025-06-23 07:37:25 [main] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        categorias
+        (ativo, created_at, descricao, icone, nome, slug, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2025-06-23 07:37:25 [main] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        categorias
+        (ativo, created_at, descricao, icone, nome, slug, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2025-06-23 07:37:25 [main] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        categorias
+        (ativo, created_at, descricao, icone, nome, slug, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2025-06-23 07:37:25 [main] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        categorias
+        (ativo, created_at, descricao, icone, nome, slug, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2025-06-23 07:37:25 [main] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        categorias
+        (ativo, created_at, descricao, icone, nome, slug, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2025-06-23 07:37:25 [main] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        categorias
+        (ativo, created_at, descricao, icone, nome, slug, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2025-06-23 07:37:25 [main] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        categorias
+        (ativo, created_at, descricao, icone, nome, slug, updated_at) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2025-06-23 07:37:25 [main] INFO  com.delivery.config.DataLoader - Carregadas 11 categorias com sucesso
+2025-06-23 07:37:25 [main] INFO  com.delivery.config.DataLoader - Carregamento de dados concluído com sucesso!
+2025-06-23 07:37:25 [main] INFO  com.delivery.DeliveryApplication - === DELIVERY APPLICATION STARTED SUCCESSFULLY ===
+2025-06-23 07:37:25 [main] INFO  com.delivery.DeliveryApplication - H2 Console: http://localhost:8080/h2-console
+2025-06-23 07:37:25 [main] INFO  com.delivery.DeliveryApplication - API Base URL: http://localhost:8080/api
+2025-06-23 07:37:25 [main] INFO  com.delivery.DeliveryApplication - ===============================================
+2025-06-23 07:38:12 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-06-23 07:38:12 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-06-23 07:38:12 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-06-23 07:57:46 [main] INFO  com.delivery.DeliveryApplication - Starting DeliveryApplication using Java 17.0.15 with PID 15368 (C:\Git\deliveryBack\delivery\target\classes started by joaqu in C:\Git\deliveryBack\delivery)
+2025-06-23 07:57:46 [main] DEBUG com.delivery.DeliveryApplication - Running with Spring Boot v3.2.0, Spring v6.1.1
+2025-06-23 07:57:46 [main] INFO  com.delivery.DeliveryApplication - No active profile set, falling back to 1 default profile: "default"
+2025-06-23 07:57:46 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-23 07:57:46 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 42 ms. Found 7 JPA repository interfaces.
+2025-06-23 07:57:47 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-06-23 07:57:47 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-06-23 07:57:47 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.16]
+2025-06-23 07:57:47 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-06-23 07:57:47 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1242 ms
+2025-06-23 07:57:47 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-06-23 07:57:47 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7e61e25c
+2025-06-23 07:57:47 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-06-23 07:57:47 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-06-23 07:57:47 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.3.1.Final
+2025-06-23 07:57:47 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-06-23 07:57:47 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-06-23 07:57:47 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-06-23 07:57:48 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-06-23 07:57:49 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-06-23 07:57:49 [main] DEBUG c.d.security.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2025-06-23 07:57:49 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-06-23 07:57:50 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@4b8816f7, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2d7ee91c, org.springframework.security.web.context.SecurityContextHolderFilter@6ad57ee3, org.springframework.security.web.header.HeaderWriterFilter@167c0e2e, org.springframework.web.filter.CorsFilter@56a2599a, org.springframework.security.web.authentication.logout.LogoutFilter@594c66ea, com.delivery.security.JwtAuthenticationFilter@70ca8e72, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2c720867, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@69da07ff, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@3a3f66f3, org.springframework.security.web.session.SessionManagementFilter@731a1399, org.springframework.security.web.access.ExceptionTranslationFilter@5cfed4ee, org.springframework.security.web.access.intercept.AuthorizationFilter@5aa786fc]
+2025-06-23 07:57:50 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2025-06-23 07:57:50 [main] INFO  com.delivery.DeliveryApplication - Started DeliveryApplication in 5.147 seconds (process running for 5.742)
+2025-06-23 07:57:50 [main] INFO  com.delivery.config.DataLoader - Iniciando carregamento de dados...
+2025-06-23 07:57:50 [main] DEBUG org.hibernate.SQL - 
+    select
+        count(*) 
+    from
+        categorias c1_0
+2025-06-23 07:57:50 [main] INFO  com.delivery.config.DataLoader - Categorias existentes no banco: 11
+2025-06-23 07:57:50 [main] INFO  com.delivery.config.DataLoader - Categorias já carregadas, pulando inicialização
+2025-06-23 07:57:50 [main] INFO  com.delivery.config.DataLoader - Carregamento de dados concluído com sucesso!
+2025-06-23 07:57:50 [main] INFO  com.delivery.DeliveryApplication - === DELIVERY APPLICATION STARTED SUCCESSFULLY ===
+2025-06-23 07:57:50 [main] INFO  com.delivery.DeliveryApplication - H2 Console: http://localhost:8080/h2-console
+2025-06-23 07:57:50 [main] INFO  com.delivery.DeliveryApplication - API Base URL: http://localhost:8080/api
+2025-06-23 07:57:50 [main] INFO  com.delivery.DeliveryApplication - ===============================================
